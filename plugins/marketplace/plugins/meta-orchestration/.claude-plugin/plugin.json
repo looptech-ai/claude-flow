@@ -1,8 +1,0 @@
-{
-  "name": "claude-flow",
-  "description": "Intelligent swarm orchestration and monitoring for claude-flow. Provides specialized monitoring agents, meta-orchestration patterns, and MCP tool integration.",
-  "version": "1.0.0",
-  "author": {
-    "name": "Loop (https://looptech.ai)"
-  }
-}

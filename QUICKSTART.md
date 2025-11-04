@@ -1,13 +1,14 @@
-# Quick Start - Claude Flow + Meta-Orchestration Plugin
+# Claude Flow - Quick Install
 
-> Complete setup from scratch in 5 minutes
+> Complete setup in 5 minutes
 
 ## Prerequisites
 
 - **Node.js 18+** and **npm 9+**
 - **Git**
+- **Claude Code** installed
 
-## 1. Install Claude Code
+## 1. Install Claude Code (if needed)
 
 ```bash
 npm install -g @anthropic-ai/claude-code
@@ -21,10 +22,7 @@ claude --version
 git clone https://github.com/looptech-ai/claude-flow.git
 cd claude-flow
 
-# Checkout the feature branch (or main after merge)
-git checkout feature/meta-orchestration-observability
-
-# Install dependencies (use --legacy-peer-deps to handle TypeScript version conflicts)
+# Install dependencies
 npm install --legacy-peer-deps
 
 # Build the project
@@ -37,145 +35,112 @@ npm install -g .
 claude-flow --version
 ```
 
-## 3. Configure MCP Servers
+## 3. Configure MCP Server
 
 ```bash
 # Required: Claude Flow MCP
 claude mcp add claude-flow npx claude-flow@alpha mcp start
 
-# Optional: Enhanced monitoring (if you have these)
-claude mcp add archon <your-archon-command>
-claude mcp add context7 <your-context7-command>
-claude mcp add linear-server npx @linear/mcp-server
-
 # Verify
 claude mcp list
 ```
 
-## 4. Install Meta-Orchestration Plugin
+## 4. Install Claude-Flow Plugin
 
-**Two scenarios depending on your Claude Code session location**:
-
-### Scenario A: Claude Code Session IN claude-flow directory
+From inside the claude-flow directory:
 
 ```bash
-# You're already in: .../claude-flow/
-pwd  # Should end with .../claude-flow
+# Verify you're in the claude-flow repo
+pwd
+# Should show: .../claude-flow
 
-# Add marketplace
-/plugin marketplace add ./plugins/marketplace
-```
+# Install as local plugin
+/plugin add ./
 
-### Scenario B: Claude Code Session OUTSIDE claude-flow directory
-
-If you cloned claude-flow into your existing project:
-
-```bash
-# You're in: .../your-project/
-# And you cloned to: .../your-project/claude-flow/
-
-# Verify plugin structure exists
-ls claude-flow/plugins/marketplace/.claude-plugin/marketplace.json
-# Should show the file exists
-
-# Add marketplace (include claude-flow/ in path)
-/plugin marketplace add ./claude-flow/plugins/marketplace
-```
-
-### Install and Verify (Both Scenarios)
-
-```bash
-# Install the plugin
-/plugin install claude-flow@claude-flow-plugin
-
-# Verify
+# Verify installation
 /plugin list
-# Should show: claude-flow@claude-flow-plugin (enabled)
+# Should show: claude-flow (enabled)
+
+# Check available agents
+/agents
+# Should list: clerk (and many others)
+
+# Check available commands
+/help
+# Should show: /swarm-start, /swarm-status
 ```
 
-**Key Point**: The path is relative to YOUR CLAUDE CODE SESSION'S WORKING DIRECTORY, not the claude-flow repo root.
-
-## 5. Test Installation
+## 5. Quick Test
 
 ```bash
-# Test 1: Start a simple swarm with monitoring
-/swarm-start "Create a hello.txt file with 'Hello World'"
+# Show orchestration patterns
+"Help me build a REST API with swarm"
 
-# Test 2: Check if monitoring agent works
-# The swarm-monitor agent should automatically track progress
+# You'll see a menu of 4 patterns:
+# 1. Quick Swarm
+# 2. Hive-Mind
+# 3. Background Swarm
+# 4. SPARC TDD
+```
 
-# Test 3: Check status
+## Usage Example
+
+```bash
+# Start a swarm with clerk monitoring
+/swarm-start "Build calculator API"
+
+# Check status
 /swarm-status
-```
-
-## Quick Usage
-
-### Start a Swarm with Intelligent Monitoring
-```bash
-/swarm-start "Build REST API with authentication"
-```
-
-### Monitor Existing Swarm
-```bash
-/swarm-monitor /tmp/swarm-1730745000/
-```
-
-### Check Status
-```bash
-/swarm-status
-```
-
-## Troubleshooting
-
-### npm install fails with ERESOLVE error
-```bash
-# Use legacy peer deps to bypass TypeScript version conflicts
-npm install --legacy-peer-deps
-npm run build
-```
-
-### Plugin Not Found
-```bash
-# Reinstall marketplace
-/plugin marketplace remove claude-flow-plugin
-/plugin marketplace add file://$(pwd)/plugins/marketplace
-/plugin install claude-flow@claude-flow-plugin
-```
-
-### MCP Tools Not Working
-```bash
-# Restart MCP servers
-claude mcp restart claude-flow
-claude mcp list
-```
-
-### Commands Not Available
-```bash
-# Enable plugin
-/plugin enable claude-flow@claude-flow-plugin
-
-# Restart Claude Code
 ```
 
 ## What You Get
 
-- ✅ **claude-flow**: Enterprise AI orchestration
-- ✅ **3 Slash Commands**: /swarm-start, /swarm-monitor, /swarm-status
-- ✅ **Intelligent Agent**: swarm-monitor (9/10 effectiveness)
-- ✅ **20 MCP Tools**: Monitoring, validation, best practices
-- ✅ **Auto-invoked Skill**: Meta-orchestration patterns
+✅ **2 Slash Commands**:
+- `/swarm-start` - Start swarm with clerk monitoring
+- `/swarm-status` - Check status with MCP tools
 
-## Next Steps
+✅ **Clerk Agent**:
+- View with: `/agents`
+- Use with: `Task("Observer", "Monitor swarm...", "clerk")`
 
-- **Full Docs**: `plugins/meta-orchestration/README.md`
-- **Installation Guide**: `plugins/meta-orchestration/INSTALLATION.md`
-- **Quick Reference**: `plugins/meta-orchestration/skills/swarm-orchestration/QUICK_REFERENCE.md`
+✅ **Auto-invoked Skill**:
+- Shows pattern menu automatically
+- Simple 4-step workflow
 
-## Support
+✅ **74+ Existing Agents**:
+- Core: coder, reviewer, tester, planner, researcher
+- Swarm: hierarchical-coordinator, mesh-coordinator, adaptive-coordinator
+- GitHub: pr-manager, code-review-swarm, issue-tracker
+- And many more!
 
-- **GitHub**: https://github.com/looptech-ai/claude-flow
-- **Loop**: https://looptech.ai
+## Troubleshooting
 
----
+### npm install fails
+```bash
+npm install --legacy-peer-deps
+npm run build
+```
 
-**Total Setup Time**: ~5 minutes | **Made with ❤️ by Loop**
+### Plugin not found
+```bash
+# Make sure you're in claude-flow directory
+pwd
+
+# Reinstall
+/plugin remove claude-flow
+/plugin add ./
+```
+
+### Clerk agent not visible
+```bash
+# Verify plugin is enabled
+/plugin list
+
+# Check agents list
+/agents
+# Clerk should appear in the list
+```
+
+## Total Setup Time: ~5 minutes
+
+**Made with ❤️ by Loop** (https://looptech.ai)
