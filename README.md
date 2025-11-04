@@ -93,6 +93,103 @@ Claude-Flow includes **25 specialized skills** that activate automatically via n
 
 ---
 
+## 🔭 **Meta-Orchestration with Observability (v2.8.0)**
+
+### Real-Time Swarm Monitoring
+
+Claude Flow v2.8.0 introduces **meta-orchestration** - hierarchical control of swarms through supervisor agents that provide real-time visibility and intervention capabilities.
+
+```bash
+# Spawn swarm with event streaming
+npx claude-flow@alpha swarm init --topology mesh --enable-events
+
+# Monitor with supervisor agent (via Claude Code)
+Task("Monitor Supervisor",
+  "Monitor swarm and generate progress reports every 3 minutes",
+  "monitor-supervisor"
+)
+
+# Check real-time report
+cat monitoring-report.md
+```
+
+**Key Features:**
+- **Real-time event streaming** from swarm execution
+- **Supervisor agents** for monitoring, interaction, and coordination
+- **Agent-to-agent messaging** via MCP tools
+- **Multi-swarm coordination** with memory synchronization
+- **Hierarchical orchestration** with queens and supervisors
+
+### Supervisor Agents
+
+**Monitor Supervisor** - Real-time progress tracking and reporting
+```javascript
+// Automatically generates reports every 2-3 minutes
+// - Task completion rates
+// - Performance metrics
+// - Error detection and alerts
+// - Trend analysis
+```
+
+**Interaction Supervisor** - Agent communication and conflict resolution
+```javascript
+// Manages agent-to-agent messaging
+// - Direct messaging via swarm_message
+// - Conflict resolution workflows
+// - Intervention and control
+// - Pause/resume orchestration
+```
+
+**Coordinator Supervisor** - Multi-swarm coordination
+```javascript
+// Orchestrates multiple concurrent swarms
+// - Cross-swarm memory synchronization
+// - Resource allocation
+// - Dependency management
+// - Aggregate status reporting
+```
+
+### MCP Tools for Observability
+
+Three new MCP tools enable meta-orchestration:
+
+**swarm_monitor** - Stream real-time events
+```javascript
+await mcp__claude-flow__swarm_monitor({
+  swarmId: "swarm-123",
+  streamEvents: true,
+  filters: { minSeverity: "info" }
+});
+```
+
+**swarm_message** - Agent communication
+```javascript
+await mcp__claude-flow__swarm_message({
+  targetAgent: "coder-1",
+  message: {
+    type: "notification",
+    subject: "Review needed",
+    body: "Please review auth.service.ts"
+  }
+});
+```
+
+**swarm_query_events** - Historical event queries
+```javascript
+await mcp__claude-flow__swarm_query_events({
+  swarmId: "swarm-123",
+  since: Date.now() - 180000, // Last 3 minutes
+  filters: { eventTypes: ["error", "task_completed"] }
+});
+```
+
+**Get Started:**
+- **Testing Guide:** [TESTING_META_ORCHESTRATION.md](./TESTING_META_ORCHESTRATION.md)
+- **API Documentation:** [docs/API_OBSERVABILITY.md](./docs/API_OBSERVABILITY.md)
+- **Supervisor Agents:** [.claude/agents/supervisor/](./claude/agents/supervisor/)
+
+---
+
 ## 🆕 **What's New in v2.7.0-alpha.10**
 
 ### ✅ **Semantic Search Fixed**

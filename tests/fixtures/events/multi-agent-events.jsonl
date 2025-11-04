@@ -1,0 +1,32 @@
+{"type":"swarm.start","timestamp":"2025-01-01T14:00:00.000Z","sessionId":"test-session-002","data":{"instruction":"Full-stack web application","maxAgents":5,"strategy":"auto"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T14:00:01.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"role":"coder","profile":"backend-dev"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T14:00:02.000Z","sessionId":"test-session-002","agentId":"frontend-1","data":{"role":"coder","profile":"frontend-dev"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T14:00:03.000Z","sessionId":"test-session-002","agentId":"database-1","data":{"role":"architect","profile":"database-architect"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T14:00:04.000Z","sessionId":"test-session-002","agentId":"tester-1","data":{"role":"tester","profile":"qa-engineer"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T14:00:05.000Z","sessionId":"test-session-002","agentId":"reviewer-1","data":{"role":"reviewer","profile":"code-reviewer"}}
+{"type":"task.assign","timestamp":"2025-01-01T14:00:10.000Z","sessionId":"test-session-002","agentId":"database-1","data":{"taskId":"db-schema","description":"Design database schema"}}
+{"type":"task.start","timestamp":"2025-01-01T14:00:11.000Z","sessionId":"test-session-002","agentId":"database-1","data":{"taskId":"db-schema"}}
+{"type":"task.complete","timestamp":"2025-01-01T14:05:00.000Z","sessionId":"test-session-002","agentId":"database-1","data":{"taskId":"db-schema","result":"success"}}
+{"type":"coordination.sync","timestamp":"2025-01-01T14:05:05.000Z","sessionId":"test-session-002","data":{"agents":["backend-1","database-1"],"syncType":"schema-ready"}}
+{"type":"task.assign","timestamp":"2025-01-01T14:05:10.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"taskId":"api-impl","description":"Implement REST API"}}
+{"type":"task.start","timestamp":"2025-01-01T14:05:11.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"taskId":"api-impl"}}
+{"type":"task.progress","timestamp":"2025-01-01T14:10:00.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"taskId":"api-impl","progress":30}}
+{"type":"task.progress","timestamp":"2025-01-01T14:15:00.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"taskId":"api-impl","progress":60}}
+{"type":"task.complete","timestamp":"2025-01-01T14:20:00.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"taskId":"api-impl","result":"success"}}
+{"type":"coordination.sync","timestamp":"2025-01-01T14:20:05.000Z","sessionId":"test-session-002","data":{"agents":["frontend-1","backend-1"],"syncType":"api-ready"}}
+{"type":"task.assign","timestamp":"2025-01-01T14:20:10.000Z","sessionId":"test-session-002","agentId":"frontend-1","data":{"taskId":"ui-impl","description":"Build React UI"}}
+{"type":"task.start","timestamp":"2025-01-01T14:20:11.000Z","sessionId":"test-session-002","agentId":"frontend-1","data":{"taskId":"ui-impl"}}
+{"type":"task.assign","timestamp":"2025-01-01T14:20:15.000Z","sessionId":"test-session-002","agentId":"tester-1","data":{"taskId":"api-tests","description":"Write API tests"}}
+{"type":"task.start","timestamp":"2025-01-01T14:20:16.000Z","sessionId":"test-session-002","agentId":"tester-1","data":{"taskId":"api-tests"}}
+{"type":"task.complete","timestamp":"2025-01-01T14:30:00.000Z","sessionId":"test-session-002","agentId":"frontend-1","data":{"taskId":"ui-impl","result":"success"}}
+{"type":"task.complete","timestamp":"2025-01-01T14:32:00.000Z","sessionId":"test-session-002","agentId":"tester-1","data":{"taskId":"api-tests","result":"success"}}
+{"type":"coordination.handoff","timestamp":"2025-01-01T14:32:05.000Z","sessionId":"test-session-002","data":{"from":"tester-1","to":"reviewer-1","context":"code-review"}}
+{"type":"task.assign","timestamp":"2025-01-01T14:32:10.000Z","sessionId":"test-session-002","agentId":"reviewer-1","data":{"taskId":"code-review","description":"Review all code"}}
+{"type":"task.start","timestamp":"2025-01-01T14:32:11.000Z","sessionId":"test-session-002","agentId":"reviewer-1","data":{"taskId":"code-review"}}
+{"type":"task.complete","timestamp":"2025-01-01T14:40:00.000Z","sessionId":"test-session-002","agentId":"reviewer-1","data":{"taskId":"code-review","result":"success"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T14:40:05.000Z","sessionId":"test-session-002","agentId":"database-1","data":{"reason":"tasks_complete"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T14:40:06.000Z","sessionId":"test-session-002","agentId":"backend-1","data":{"reason":"tasks_complete"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T14:40:07.000Z","sessionId":"test-session-002","agentId":"frontend-1","data":{"reason":"tasks_complete"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T14:40:08.000Z","sessionId":"test-session-002","agentId":"tester-1","data":{"reason":"tasks_complete"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T14:40:09.000Z","sessionId":"test-session-002","agentId":"reviewer-1","data":{"reason":"tasks_complete"}}
+{"type":"swarm.complete","timestamp":"2025-01-01T14:45:00.000Z","sessionId":"test-session-002","data":{"status":"success","duration":2700000,"tasksCompleted":5,"agentsUsed":5}}

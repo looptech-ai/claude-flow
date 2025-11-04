@@ -12,6 +12,7 @@ import { Agent } from './Agent.js';
 import { Memory } from './Memory.js';
 import { Communication } from './Communication.js';
 import { DatabaseManager } from './DatabaseManager.js';
+import { EventStreamManager } from '../../coordination/event-stream-manager.js';
 import { SwarmOrchestrator } from '../integration/SwarmOrchestrator.js';
 import { ConsensusEngine } from '../integration/ConsensusEngine.js';
 import {
@@ -38,6 +39,7 @@ export class HiveMind extends EventEmitter {
   private db: DatabaseManager;
   private started: boolean = false;
   private startTime: number;
+  public eventStream: EventStreamManager | null = null;
 
   constructor(config: HiveMindConfig) {
     super();
@@ -433,6 +435,82 @@ export class HiveMind extends EventEmitter {
   }
 
   /**
+   * Enable event streaming for observability
+   * Uses the enhanced EventStreamManager from coordination layer
+   */
+  async enableEventStreaming(
+    outputPath: string = '.claude/events',
+    options?: {
+      enableBuffering?: boolean;
+      flushInterval?: number;
+      maxBufferSize?: number;
+    }
+  ): Promise<void> {
+    if (this.eventStream?.isRunning()) {
+      console.warn('Event streaming is already enabled');
+      return;
+    }
+
+    try {
+      // Create a simple logger for the EventStreamManager
+      const logger = {
+        debug: (msg: string, meta?: unknown) => console.debug(`[EventStream] ${msg}`, meta),
+        info: (msg: string, meta?: unknown) => console.info(`[EventStream] ${msg}`, meta),
+        warn: (msg: string, meta?: unknown) => console.warn(`[EventStream] ${msg}`, meta),
+        error: (msg: string, error?: unknown) => console.error(`[EventStream] ${msg}`, error),
+        configure: async () => {},
+      };
+
+      this.eventStream = new EventStreamManager(
+        {
+          swarmId: this.id,
+          outputPath,
+          enableBuffering: options?.enableBuffering ?? true,
+          flushInterval: options?.flushInterval ?? 1000,
+          maxBufferSize: options?.maxBufferSize ?? 100,
+        },
+        logger
+      );
+
+      await this.eventStream.start();
+
+      console.info('Event streaming enabled', {
+        swarmId: this.id,
+        outputPath: this.eventStream.getOutputPath(),
+      });
+    } catch (error) {
+      console.error('Failed to enable event streaming', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Disable event streaming
+   */
+  async disableEventStreaming(): Promise<void> {
+    if (this.eventStream?.isRunning()) {
+      await this.eventStream.stop();
+      console.info('Event streaming disabled', {
+        stats: this.eventStream.getStats(),
+      });
+    }
+  }
+
+  /**
+   * Get event streaming statistics
+   */
+  getEventStreamStats() {
+    return this.eventStream?.getStats();
+  }
+
+  /**
+   * Get the swarm ID (public accessor)
+   */
+  get swarmId(): string {
+    return this.id;
+  }
+
+  /**
    * Shutdown the Hive Mind
    */
   async shutdown(): Promise<void> {
@@ -441,6 +519,11 @@ export class HiveMind extends EventEmitter {
     // Shutdown all agents
     for (const agent of this.agents.values()) {
       await agent.shutdown();
+    }
+
+    // Shutdown event streaming if enabled
+    if (this.eventStream?.isRunning()) {
+      await this.eventStream.stop();
     }
 
     // Shutdown subsystems

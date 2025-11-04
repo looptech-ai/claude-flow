@@ -1,0 +1,14 @@
+{"type":"swarm.start","timestamp":"2025-01-01T10:00:00.000Z","sessionId":"test-session-001","data":{"instruction":"Build a REST API","maxAgents":3,"strategy":"auto"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T10:00:01.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"role":"coder","profile":"backend-dev"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T10:00:02.000Z","sessionId":"test-session-001","agentId":"agent-2","data":{"role":"tester","profile":"qa-engineer"}}
+{"type":"task.assign","timestamp":"2025-01-01T10:00:05.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"taskId":"task-1","description":"Implement authentication"}}
+{"type":"task.start","timestamp":"2025-01-01T10:00:06.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"taskId":"task-1"}}
+{"type":"memory.store","timestamp":"2025-01-01T10:00:10.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"namespace":"swarm/agent-1","key":"auth-context","valueSize":512}}
+{"type":"task.progress","timestamp":"2025-01-01T10:05:00.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"taskId":"task-1","progress":50}}
+{"type":"coordination.handoff","timestamp":"2025-01-01T10:08:00.000Z","sessionId":"test-session-001","data":{"from":"agent-1","to":"agent-2","context":"test-context"}}
+{"type":"task.complete","timestamp":"2025-01-01T10:10:00.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"taskId":"task-1","result":"success"}}
+{"type":"task.assign","timestamp":"2025-01-01T10:10:05.000Z","sessionId":"test-session-001","agentId":"agent-2","data":{"taskId":"task-2","description":"Write tests"}}
+{"type":"task.start","timestamp":"2025-01-01T10:10:06.000Z","sessionId":"test-session-001","agentId":"agent-2","data":{"taskId":"task-2"}}
+{"type":"task.complete","timestamp":"2025-01-01T10:15:00.000Z","sessionId":"test-session-001","agentId":"agent-2","data":{"taskId":"task-2","result":"success"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T10:15:05.000Z","sessionId":"test-session-001","agentId":"agent-1","data":{"reason":"tasks_complete"}}
+{"type":"swarm.complete","timestamp":"2025-01-01T10:20:00.000Z","sessionId":"test-session-001","data":{"status":"success","duration":1200000,"tasksCompleted":2,"agentsUsed":2}}

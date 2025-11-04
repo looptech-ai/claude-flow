@@ -51,6 +51,7 @@ USAGE:
   hive-mind spawn <task>   Create intelligent swarm with objective
   hive-mind status         View active swarms and performance metrics
   hive-mind metrics        Advanced performance analytics
+  hive-mind monitor <id>   Monitor swarm events in real-time
 
 📋 CORE COMMANDS:
   init                     Initialize Claude Flow v2.0.0 (creates CLAUDE.md & .claude/commands)
@@ -136,6 +137,95 @@ USAGE:
 `;
 
 export const COMMAND_HELP = {
+  'hive-mind': `
+🐝 HIVE MIND COMMANDS - Collective Intelligence Swarm Management
+
+USAGE:
+  claude-flow hive-mind <command> [options]
+
+DESCRIPTION:
+  Hive Mind is a collective intelligence system that coordinates multiple specialized
+  agents to accomplish complex objectives through distributed collaboration.
+
+COMMANDS:
+  wizard              Interactive setup wizard (RECOMMENDED for first-time users)
+  init                Initialize Hive Mind system with SQLite database
+  spawn <type>        Spawn specialized agents into the swarm
+  status              View active swarms and performance metrics
+  task <action>       Manage tasks and workflows
+  monitor <swarmId>   Monitor swarm events in real-time
+  ps                  List running swarms
+  stop <swarmId>      Stop a running swarm
+  pause <swarmId>     Pause swarm operations
+  resume <swarmId>    Resume paused swarm
+
+SPAWN OPTIONS:
+  --enable-events     Enable event streaming for monitoring
+  --name <name>       Custom agent name
+  --capabilities <c>  Additional capabilities (comma-separated)
+  --swarm-id <id>     Target swarm ID
+  --interactive       Interactive spawn mode
+  --batch <n>         Spawn multiple agents of same type
+  --auto-assign       Automatically assign to available tasks
+
+MONITOR OPTIONS:
+  -n, --tail <n>      Show last N events (default: 10)
+  -f, --follow        Follow mode - stream new events in real-time
+  --filter <types>    Filter by event types (comma-separated)
+  --format <type>     Output format (pretty, json)
+
+AGENT TYPES:
+  coordinator         Task coordination and orchestration
+  researcher          Research and information gathering
+  coder              Code development and implementation
+  analyst            Performance analysis and optimization
+  architect          System design and architecture
+  tester             Test creation and quality assurance
+  reviewer           Code review and best practices
+  optimizer          Performance and resource optimization
+  documenter         Documentation generation
+  monitor            System monitoring and health checks
+  specialist         Domain-specific expertise
+
+EXAMPLES:
+  # First time setup
+  claude-flow hive-mind wizard
+
+  # Initialize a new swarm
+  claude-flow hive-mind init
+
+  # Spawn agents with event streaming
+  claude-flow hive-mind spawn coder --enable-events
+  claude-flow hive-mind spawn researcher --batch 3 --auto-assign
+
+  # Monitor swarm events
+  claude-flow hive-mind monitor swarm-123
+  claude-flow hive-mind monitor swarm-123 --follow
+  claude-flow hive-mind monitor swarm-123 --tail 50 --filter agent_spawned,task_completed
+
+  # Check swarm status
+  claude-flow hive-mind status
+  claude-flow hive-mind ps
+
+EVENT STREAMING:
+  When enabled with --enable-events, the Hive Mind records all significant events
+  to .claude/events/<swarm-id>.jsonl for real-time monitoring and analysis.
+
+  Event types include:
+  • swarm_initialized    Swarm initialization
+  • agent_spawned        New agent created
+  • agent_terminated     Agent shutdown
+  • task_submitted       New task added
+  • task_assigned        Task assigned to agent
+  • task_started         Task execution began
+  • task_completed       Task finished successfully
+  • task_failed          Task execution failed
+  • consensus_proposed   Consensus voting initiated
+  • consensus_achieved   Consensus reached
+  • memory_updated       Shared memory updated
+  • communication_sent   Inter-agent message
+  • error                Error occurred
+`,
   verify: `
 🔍 VERIFY COMMAND - Truth Verification System
 

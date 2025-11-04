@@ -57,3 +57,11 @@ export {
   type CoordinationMetrics,
   type MetricsSample,
 } from './metrics.js';
+
+// Event streaming
+export {
+  EventStreamManager,
+  type EventStreamConfig,
+  type EventFilter,
+  type SwarmEvent,
+} from './event-stream-manager.js';

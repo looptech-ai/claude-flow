@@ -6,6 +6,11 @@ import type { MCPTool, MCPContext, AgentProfile, Task, MemoryEntry } from '../ut
 import type { ILogger } from '../core/logger.js';
 import { getAvailableAgentTypes, getAgentTypeSchema } from '../constants/agent-types.js';
 import type { Permissions } from './auth.js';
+import {
+  createSwarmMonitorTool,
+  createSwarmMessageTool,
+  createQueryEventsTool,
+} from './tools/observability-tools.js';
 
 export interface ClaudeFlowToolContext extends MCPContext {
   orchestrator?: any; // Reference to orchestrator instance
@@ -71,6 +76,11 @@ export async function createClaudeFlowTools(logger: ILogger): Promise<MCPTool[]>
     createDeleteMemoryTool(logger),
     createExportMemoryTool(logger),
     createImportMemoryTool(logger),
+
+    // Observability tools (NEW: Phase 2 - MCP Observability)
+    createSwarmMonitorTool(logger),
+    createSwarmMessageTool(logger),
+    createQueryEventsTool(logger),
 
     // System monitoring tools
     createGetSystemStatusTool(logger),

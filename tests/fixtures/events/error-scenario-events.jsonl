@@ -1,0 +1,16 @@
+{"type":"swarm.start","timestamp":"2025-01-01T16:00:00.000Z","sessionId":"test-session-003","data":{"instruction":"Complex task with errors","maxAgents":2,"strategy":"auto"}}
+{"type":"agent.spawn","timestamp":"2025-01-01T16:00:01.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"role":"coder","profile":"backend-dev"}}
+{"type":"task.assign","timestamp":"2025-01-01T16:00:05.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"taskId":"task-1","description":"Implement feature"}}
+{"type":"task.start","timestamp":"2025-01-01T16:00:06.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"taskId":"task-1"}}
+{"type":"error","timestamp":"2025-01-01T16:05:00.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"error":"Compilation failed","code":"COMPILATION_ERROR","taskId":"task-1"}}
+{"type":"task.retry","timestamp":"2025-01-01T16:05:05.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"taskId":"task-1","attempt":2}}
+{"type":"error","timestamp":"2025-01-01T16:10:00.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"error":"Dependency not found","code":"DEPENDENCY_ERROR","taskId":"task-1"}}
+{"type":"task.retry","timestamp":"2025-01-01T16:10:05.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"taskId":"task-1","attempt":3}}
+{"type":"task.failed","timestamp":"2025-01-01T16:15:00.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"taskId":"task-1","reason":"max_retries_exceeded","attempts":3}}
+{"type":"agent.spawn","timestamp":"2025-01-01T16:15:05.000Z","sessionId":"test-session-003","agentId":"agent-2","data":{"role":"coder","profile":"senior-dev"}}
+{"type":"task.assign","timestamp":"2025-01-01T16:15:10.000Z","sessionId":"test-session-003","agentId":"agent-2","data":{"taskId":"task-1-retry","description":"Retry failed task with fixes"}}
+{"type":"task.start","timestamp":"2025-01-01T16:15:11.000Z","sessionId":"test-session-003","agentId":"agent-2","data":{"taskId":"task-1-retry"}}
+{"type":"task.complete","timestamp":"2025-01-01T16:25:00.000Z","sessionId":"test-session-003","agentId":"agent-2","data":{"taskId":"task-1-retry","result":"success"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T16:25:05.000Z","sessionId":"test-session-003","agentId":"agent-1","data":{"reason":"task_failed"}}
+{"type":"agent.terminate","timestamp":"2025-01-01T16:25:06.000Z","sessionId":"test-session-003","agentId":"agent-2","data":{"reason":"tasks_complete"}}
+{"type":"swarm.complete","timestamp":"2025-01-01T16:30:00.000Z","sessionId":"test-session-003","data":{"status":"success_with_errors","duration":1800000,"tasksCompleted":1,"tasksFailed":1,"agentsUsed":2,"errors":2}}

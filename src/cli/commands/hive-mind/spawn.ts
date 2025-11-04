@@ -69,6 +69,7 @@ export const spawnCommand = new Command('spawn')
   .option('-i, --interactive', 'Interactive spawn mode', false)
   .option('-b, --batch <number>', 'Spawn multiple agents of same type', '1')
   .option('--auto-assign', 'Automatically assign to available tasks', false)
+  .option('--enable-events', 'Enable event streaming for monitoring', false)
   .action(async (type, options) => {
     const spinner = ora('Spawning agent...').start();
 
@@ -147,6 +148,19 @@ export const spawnCommand = new Command('spawn')
         if (batchSize > 1) {
           spinner.text = `Spawning agents... (${i + 1}/${batchSize})`;
         }
+      }
+
+      // Initialize event streaming if enabled
+      if (options.enableEvents) {
+        await hiveMind.enableEventStreaming();
+
+        const eventPath = hiveMind.eventStream?.getOutputPath();
+
+        console.log('\n' + chalk.cyan('📡 Event streaming enabled'));
+        console.log(chalk.gray(`   Events: ${eventPath}`));
+        console.log(
+          chalk.gray(`   Monitor: npx claude-flow hive-mind monitor ${hiveMind.swarmId}`),
+        );
       }
 
       spinner.succeed(formatSuccess(`Successfully spawned ${batchSize} ${type} agent(s)!`));
