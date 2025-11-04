@@ -54,22 +54,37 @@ claude mcp list
 
 ## 4. Install Meta-Orchestration Plugin
 
-**IMPORTANT**: Navigate to the claude-flow repository directory first:
-```bash
-# Navigate to claude-flow directory (wherever you cloned it)
-cd claude-flow
+**Two scenarios depending on your Claude Code session location**:
 
-# Verify you're in the right place
-pwd
-# Should end with: .../claude-flow
+### Scenario A: Claude Code Session IN claude-flow directory
+
+```bash
+# You're already in: .../claude-flow/
+pwd  # Should end with .../claude-flow
+
+# Add marketplace
+/plugin marketplace add ./plugins/marketplace
+```
+
+### Scenario B: Claude Code Session OUTSIDE claude-flow directory
+
+If you cloned claude-flow into your existing project:
+
+```bash
+# You're in: .../your-project/
+# And you cloned to: .../your-project/claude-flow/
 
 # Verify plugin structure exists
-ls plugins/marketplace/.claude-plugin/marketplace.json
+ls claude-flow/plugins/marketplace/.claude-plugin/marketplace.json
 # Should show the file exists
 
-# Add marketplace (use relative path from repo root)
-/plugin marketplace add ./plugins/marketplace
+# Add marketplace (include claude-flow/ in path)
+/plugin marketplace add ./claude-flow/plugins/marketplace
+```
 
+### Install and Verify (Both Scenarios)
+
+```bash
 # Install the plugin
 /plugin install claude-flow@claude-flow-plugin
 
@@ -78,10 +93,7 @@ ls plugins/marketplace/.claude-plugin/marketplace.json
 # Should show: claude-flow@claude-flow-plugin (enabled)
 ```
 
-**Troubleshooting**: If you see "Marketplace file not found", ensure:
-1. You're IN the claude-flow directory (run `cd claude-flow` first)
-2. The file exists at: `plugins/marketplace/.claude-plugin/marketplace.json`
-3. Use the relative path: `./plugins/marketplace` (not `./claude-flow/plugins/marketplace`)
+**Key Point**: The path is relative to YOUR CLAUDE CODE SESSION'S WORKING DIRECTORY, not the claude-flow repo root.
 
 ## 5. Test Installation
 
