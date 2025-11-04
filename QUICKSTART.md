@@ -24,8 +24,8 @@ cd claude-flow
 # Checkout the feature branch (or main after merge)
 git checkout feature/meta-orchestration-observability
 
-# Install dependencies
-npm install
+# Install dependencies (use --legacy-peer-deps to handle TypeScript version conflicts)
+npm install --legacy-peer-deps
 
 # Build the project
 npm run build
@@ -97,6 +97,13 @@ claude mcp list
 ```
 
 ## Troubleshooting
+
+### npm install fails with ERESOLVE error
+```bash
+# Use legacy peer deps to bypass TypeScript version conflicts
+npm install --legacy-peer-deps
+npm run build
+```
 
 ### Plugin Not Found
 ```bash
