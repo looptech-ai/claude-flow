@@ -1,16 +1,13 @@
 {
   "name": "claude-flow-plugin",
-  "displayName": "Claude Flow Plugin Marketplace",
-  "description": "Local development marketplace for claude-flow meta-orchestration plugin",
+  "owner": {
+    "name": "Loop"
+  },
   "plugins": [
     {
       "name": "claude-flow",
-      "source": "../meta-orchestration",
-      "displayName": "Claude Flow Meta-Orchestration",
-      "description": "Intelligent swarm orchestration and monitoring for claude-flow with MCP tool integration. Includes specialized monitoring agent, 4 production-ready patterns, and slash commands.",
-      "version": "1.0.0",
-      "author": "Loop (https://looptech.ai)",
-      "tags": ["swarm", "orchestration", "monitoring", "mcp", "claude-flow"]
+      "source": "./meta-orchestration",
+      "description": "Intelligent swarm orchestration and monitoring for claude-flow with MCP tool integration. Includes specialized monitoring agent, 4 production-ready patterns, and slash commands."
     }
   ]
 }
