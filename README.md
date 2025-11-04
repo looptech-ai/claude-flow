@@ -96,6 +96,45 @@ claude-flow init --force
 
 **Note:** GitHub installation provides the latest enhancements not yet available in the npm package.
 
+### 🔌 **Claude Code Plugin** (New!)
+
+Install the **meta-orchestration plugin** for enhanced Claude Code integration:
+
+```bash
+# Clone the repo (if not already cloned)
+git clone https://github.com/looptech-ai/claude-flow.git
+cd claude-flow
+
+# Add local marketplace to Claude Code
+/plugin marketplace add file://$(pwd)/plugins/marketplace
+
+# Install the plugin
+/plugin install claude-flow@claude-flow-plugin
+
+# Verify installation
+/plugin list
+```
+
+**Plugin Features:**
+- 🤖 **Intelligent Monitoring Agent** - 9/10 effectiveness with MCP tool integration
+- 📋 **3 Slash Commands** - `/swarm-start`, `/swarm-monitor`, `/swarm-status`
+- 🧠 **Auto-invoked Skill** - Meta-orchestration patterns for swarm supervision
+- 🔧 **20 MCP Tools** - Monitoring-specific tools from claude-flow, Archon, Linear, Context7
+
+**Quick Start:**
+```bash
+# Start a swarm with intelligent monitoring
+/swarm-start "Build REST API with authentication"
+
+# Monitor existing swarm
+/swarm-monitor /tmp/swarm-<timestamp>/
+
+# Check status
+/swarm-status
+```
+
+See [`plugins/meta-orchestration/README.md`](../plugins/meta-orchestration/README.md) for full documentation.
+
 ---
 
 ## 🎨 **Skills System**

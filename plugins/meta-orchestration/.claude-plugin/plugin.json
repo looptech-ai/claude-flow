@@ -1,0 +1,28 @@
+{
+  "name": "claude-flow",
+  "displayName": "Claude Flow Meta-Orchestration",
+  "version": "1.0.0",
+  "description": "Intelligent swarm orchestration and monitoring for claude-flow. Provides specialized monitoring agents, meta-orchestration patterns, and MCP tool integration.",
+  "author": "Loop (https://looptech.ai)",
+  "homepage": "https://github.com/looptech-ai/claude-flow",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/looptech-ai/claude-flow.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "claude-flow",
+    "swarm",
+    "orchestration",
+    "monitoring",
+    "mcp"
+  ],
+  "capabilities": [
+    "commands",
+    "agents",
+    "skills"
+  ],
+  "requirements": {
+    "claude-code": ">=1.0.0"
+  }
+}
