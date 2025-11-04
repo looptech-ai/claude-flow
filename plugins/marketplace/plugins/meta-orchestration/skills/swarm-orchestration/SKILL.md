@@ -79,7 +79,36 @@ mcp__claude-flow__swarm_init({
   strategy: "adaptive"
 })
 
-// Phase 3: Spawn Additional Agents if Needed (MCP)
+// Phase 3: Spawn Intelligent Monitor (USE SPECIALIZED SUBAGENT!)
+Task("Swarm Monitor", `
+Monitor the swarm at /tmp/swarm-logs/ (or wherever swarm is running).
+
+**USE MCP TOOLS (you have access)**:
+- mcp__claude-flow__swarm_status() - Check swarm health
+- mcp__claude-flow__agent_metrics({ agentId }) - Agent performance
+- mcp__archon__find_tasks({ query: "..." }) - Task progress
+- mcp__archon__rag_search_knowledge_base({ query: "best practices" }) - Validate patterns
+- mcp__context7__get-library-docs({ context7CompatibleLibraryID: "/..." }) - Framework docs
+
+**FILE ANALYSIS**:
+- Read files created by swarm
+- Understand their PURPOSE (not just count)
+- Validate architecture patterns
+- Check for best practices compliance
+- Assess code quality with specific examples
+
+**REPORT EVERY 2 MINUTES**:
+1. What was created and WHY
+2. Architecture validation results
+3. Best practices compliance
+4. Performance metrics from MCP tools
+5. Issues found and recommendations
+
+Use your MCP tools to provide intelligent insights, not just basic file counting!
+`, "swarm-monitor")  // ← THIS IS THE KEY: Use specialized subagent!
+
+// Phase 4: OPTIONAL - Spawn Additional Coordination Agents (MCP)
+// Only if you need extra orchestration beyond monitoring
 mcp__claude-flow__agents_spawn_parallel({
   agents: [
     { type: "coordinator", name: "Lead", priority: "high" },
@@ -88,34 +117,34 @@ mcp__claude-flow__agents_spawn_parallel({
   maxConcurrency: 2
 })
 
-// Phase 4: Orchestrate Sub-Tasks (MCP - delegates to agents)
-const { taskId } = mcp__claude-flow__task_orchestrate({
-  task: "Monitor swarm progress and validate architecture",
-  strategy: "parallel",
-  priority: "high"
-})
-
-// Phase 5: Monitor Progress (MCP - check periodically)
-// Wait 10-15 seconds, then check status
-const { status, progress } = mcp__claude-flow__task_status({ taskId })
-
-// If status is "in_progress", keep checking every 10-15 seconds
-// DO NOT move forward until status is "completed" or "failed"
-
-// Phase 6: Check Swarm Health (MCP)
+// Phase 5: Check Swarm Health (MCP - as primary)
+// While the swarm-monitor subagent handles intelligent monitoring,
+// you can also check status directly:
 mcp__claude-flow__swarm_status()  // Check overall swarm
-mcp__claude-flow__agent_metrics({ agentId: "..." })  // Agent performance
-mcp__claude-flow__performance_report({ format: "summary" })  // Metrics
+mcp__claude-flow__agent_metrics({ agentId: "..." })  // Specific agent performance
+mcp__claude-flow__performance_report({ format: "summary" })  // Overall metrics
 
-// Phase 7: Retrieve Results (MCP - after completion)
-const { results } = mcp__claude-flow__task_results({ taskId })
+// Phase 6: Let Monitor Work & Wait for Swarm Completion
+// The swarm-monitor subagent is running continuously
+// Wait for the main swarm execution to complete
+// Check swarm.log or monitor agent reports periodically
 
-// Phase 8: Review and Act
-// Analyze what agents produced
-// If good: Accept and continue
-// If needs work: Orchestrate follow-up tasks (delegate again!)
+// Phase 7: Review Monitor Reports
+// The swarm-monitor will provide intelligent analysis:
+// - What was built and why
+// - Architecture validation
+// - Best practices compliance
+// - Code quality assessment
+// Review these insights before acting
 
-// Optional: Check detailed logs
+// Phase 8: Act on Results
+// Based on monitor reports and your review:
+// If good: Accept and move forward
+// If needs work:
+//   Task("Fix Issues", "Address the issues found: [list]", "coder")
+//   // Delegate fixes, don't do them yourself!
+
+// Optional: Check detailed execution logs
 Bash("tail -n 50 swarm.log")
 ```
 
@@ -126,11 +155,12 @@ Bash("tail -n 50 swarm.log")
 - **You orchestrate, don't work**: After starting swarm, use MCP to coordinate, never Edit/Write directly
 
 **Key Principles**:
-1. **Start swarm with CLI** - That's what actually executes work
-2. **Coordinate with MCP** - Monitor, orchestrate supervisory tasks
-3. **Never work directly** - You're an orchestrator after starting swarm
-4. **Always wait for completion** - Check task_status periodically
-5. **Delegate follow-ups** - Use task_orchestrate for additional work
+1. **Start swarm with CLI** - That's what actually executes work (Phase 1)
+2. **Spawn swarm-monitor subagent** - Use Task(..., "swarm-monitor") for intelligent monitoring (Phase 3)
+3. **Let specialized agent monitor** - The swarm-monitor has 20 MCP tools for analysis
+4. **Never work directly** - You're an orchestrator after starting swarm
+5. **Review monitor insights** - Act on the intelligent analysis from swarm-monitor
+6. **Delegate follow-ups** - Use Task() to delegate fixes, don't Edit/Write yourself
 
 ### Hybrid Approach (CLI for Logs)
 
