@@ -714,11 +714,266 @@ Everything is progressing smoothly!"
 **Issue:** Agents not receiving messages
 **Solution:** Verify using `swarm_message` tool correctly. Check agent IDs are valid.
 
+## Phase 6: Production-Ready Meta-Orchestration Patterns (UPDATED)
+
+### Critical Discovery: Two Command Paradigms
+
+**`hive-mind spawn`** - Infrastructure only (agents idle):
+```bash
+claude-flow hive-mind spawn coder "task"  # ❌ Spawns but doesn't work
+```
+
+**`swarm "task"`** - Actually executes:
+```bash
+claude-flow swarm "task" --background  # ✅ Spawns AND works
+```
+
+### Pattern 1: Swarm with File-Based Monitoring (RECOMMENDED)
+
+Most reliable pattern for actual execution:
+
+```javascript
+// User: "Build a calculator API, monitor progress"
+
+You: [Single Message - Spawn + Monitor]:
+  // 1. Start working swarm in background
+  Bash({
+    command: `cd project-dir && claude-flow swarm "Build calculator REST API with Express. POST /calculate endpoint with {operation: add|subtract|multiply|divide, a, b} returning {result}. Include validation." --background --max-agents 3`,
+    run_in_background: true,
+    description: "Spawn working swarm"
+  })
+
+  // 2. Spawn monitor supervisor immediately
+  Task("Monitor Supervisor", `
+    Monitor the swarm via log files.
+
+    TASK:
+    1. Wait 5 seconds for swarm initialization
+    2. Find swarm log: find project-dir/swarm-runs -name "swarm.log" | tail -1
+    3. Monitor every 30 seconds:
+       bash: tail -20 <log-file>
+       Look for: "Agent spawned", "Task completed", "Error", "Failed"
+    4. Report to primary every 2 minutes:
+       - Tasks completed (count "Task completed")
+       - Active agents (count "Agent spawned")
+       - Errors (count "Error" or "Failed")
+       - Files created (ls project-dir/*.js project-dir/*.json)
+    5. Alert if:
+       - No activity for 5+ minutes
+       - Error count > 3
+       - Process exited (check: ps aux | grep claude-flow)
+
+    OUTPUT FORMAT:
+    "Progress Update:
+     ✓ Tasks: 3 completed
+     ⚙️  Agents: coder (active), tester (active)
+     📁 Files: server.js, package.json created
+     ⏱️  Runtime: 4 minutes
+     🎯 Status: In progress, ~2 minutes remaining"
+  `, "general-purpose")
+```
+
+**Why This Works:**
+- Uses `swarm` command (actually executes)
+- `--background` prevents blocking
+- `run_in_background: true` prevents timeout
+- File-based monitoring (reliable, no MCP needed)
+- Supervisor reports real progress
+
+### Pattern 2: HiveMind with SQLite Monitoring
+
+When you need database-level visibility:
+
+```javascript
+// User: "Create a data pipeline with full visibility"
+
+You: [Single Message]:
+  // 1. Initialize database
+  Bash("cd project-dir && claude-flow hive-mind init")
+
+  // 2. Spawn agents
+  Bash("claude-flow hive-mind spawn coder --batch 2 --swarm-id pipeline-swarm")
+  Bash("claude-flow hive-mind spawn tester --swarm-id pipeline-swarm")
+
+  // 3. Spawn database monitor
+  Task("Database Monitor", `
+    Monitor HiveMind via SQLite database.
+
+    DATABASE: ./project-dir/.hive-mind/hive.db
+
+    Every 30 seconds, execute SQL queries:
+    1. Agent status:
+       sqlite3 hive.db "SELECT name, status, role FROM agents"
+    2. Task progress:
+       sqlite3 hive.db "SELECT COUNT(*), status FROM tasks GROUP BY status"
+    3. Recent activity:
+       sqlite3 hive.db "SELECT * FROM session_logs ORDER BY timestamp DESC LIMIT 5"
+    4. Memory usage:
+       sqlite3 hive.db "SELECT COUNT(*) FROM collective_memory"
+
+    Report every 2 minutes:
+    - Agent utilization (active/idle counts)
+    - Task distribution (pending/in_progress/completed/failed)
+    - Recent logs (formatted)
+    - Memory entries count
+  `, "general-purpose")
+
+  // 4. IMPORTANT: Manually dispatch work
+  Bash(`claude-flow hive-mind task create "Build data pipeline with ETL, validation, error handling" --swarm-id pipeline-swarm --assign auto`)
+```
+
+**Why This Pattern:**
+- Database gives complete visibility
+- Can query exact agent states
+- No MCP tools required
+- **Critical:** Must manually dispatch tasks with `task create`
+
+### Pattern 3: Multi-Swarm Coordinator
+
+For parallel independent workstreams:
+
+```javascript
+// User: "Migrate 3 microservices simultaneously, coordinate them"
+
+You: [Single Message - 3 Swarms + Coordinator]:
+  // Spawn 3 independent swarms
+  Bash({
+    command: "cd services/auth && claude-flow swarm 'Migrate auth-service to new schema' --background",
+    run_in_background: true
+  })
+  Bash({
+    command: "cd services/user && claude-flow swarm 'Migrate user-service to new schema' --background",
+    run_in_background: true
+  })
+  Bash({
+    command: "cd services/payment && claude-flow swarm 'Migrate payment-service to new schema' --background",
+    run_in_background: true
+  })
+
+  // Coordinator supervises all
+  Task("Multi-Swarm Coordinator", `
+    Coordinate 3 parallel migration swarms.
+
+    SWARMS:
+    1. Auth service: services/auth/swarm-runs
+    2. User service: services/user/swarm-runs
+    3. Payment service: services/payment/swarm-runs
+
+    EVERY 60 SECONDS:
+    For each swarm:
+    - Find latest log: find services/*/swarm-runs -name "swarm.log" | sort -t/ -k2
+    - Check progress: tail -5 <log>
+    - Detect completion: grep "✓ Complete" <log> || grep "✗ Failed" <log>
+    - Count files: ls services/*/migrations/*.sql | wc -l
+
+    DEPENDENCIES:
+    - Auth must complete before User can run integration tests
+    - Payment depends on User service schema being ready
+
+    COORDINATION:
+    - If auth completes, notify: "✓ Auth done, User service can test"
+    - If user schema ready, notify: "✓ User schema migrated, Payment can integrate"
+    - Block payment integration until user complete
+
+    REPORT EVERY 2 MINUTES:
+    "Migration Status:
+     🔐 Auth: ✓ Complete (5 migrations applied)
+     👤 User: ⚙️  In Progress (3/7 migrations, 60%)
+     💳 Payment: ⏸️  Waiting for User (blocked)
+     📊 Overall: 53% complete, ETA 8 minutes"
+  `, "general-purpose")
+```
+
+**Why Multi-Swarm:**
+- Complete isolation (separate processes)
+- No shared state conflicts
+- Can run in different directories
+- Coordinator aggregates progress
+
+### Pattern 4: Intervention Supervisor
+
+Monitor and intervene when issues detected:
+
+```javascript
+// User: "Build API, but intervene if there are problems"
+
+You: [Single Message]:
+  Bash({
+    command: "claude-flow swarm 'Build REST API...' --background",
+    run_in_background: true
+  })
+
+  Task("Intervention Supervisor", `
+    Monitor swarm and intervene on issues.
+
+    MONITORING:
+    1. Track error rate: grep -c "Error\|Failed" <log-file>
+    2. Detect patterns: grep "TypeError\|undefined\|ENOENT" <log-file>
+    3. Check file quality: wc -l *.js (if > 500 lines, flag for refactor)
+
+    INTERVENTION THRESHOLDS:
+    - Error rate > 20%: Simplify approach
+    - Same error 3+ times: Change strategy
+    - File > 500 lines: Suggest refactor
+    - No progress 10+ min: Restart with different approach
+
+    INTERVENTION ACTIONS:
+    - Cannot send messages to swarm (MCP tool not accessible yet)
+    - Instead: Report to primary for manual intervention
+    - Suggest: "High error rate detected. Recommend: restart with simpler validation logic"
+
+    REPORT FORMAT:
+    "Alert: High Error Rate (30%)
+     Pattern: TypeErrors in validation logic
+     Suggestion: Restart swarm with simpler validation:
+       claude-flow swarm 'Build API with basic string validation only' --background
+
+     Files so far: server.js (450 lines - good), validation.js (89 lines - good)
+     Recommendation: Salvage server.js, rewrite validation.js"
+  `, "general-purpose")
+```
+
+**Intervention Capabilities:**
+- ✅ Detect issues via log analysis
+- ✅ Generate recommendations
+- ✅ Report to primary orchestrator (me)
+- ❌ Cannot send messages to swarm yet (planned feature)
+
+### Key Learnings:
+
+1. **Use `swarm` not `hive-mind spawn`** - For actual execution
+2. **Always `--background`** - For long-running tasks
+3. **`run_in_background: true`** - In Bash tool to prevent timeout
+4. **File-based monitoring** - Most reliable (tail logs)
+5. **SQLite monitoring** - When you need exact state
+6. **Supervisor in separate Task** - Not in swarm itself
+7. **Report format** - User-friendly progress updates
+8. **Intervention** - Via primary orchestrator (not direct yet)
+
+### What Doesn't Work Yet:
+
+❌ Event file streaming (use log files instead)
+❌ Direct swarm messaging (mcp__claude-flow__swarm_message not accessible)
+❌ Auto-task-dispatch from hive-mind spawn
+❌ Real-time MCP monitoring tools
+
+### What DOES Work:
+
+✅ Background swarm execution
+✅ Log file monitoring via supervisor
+✅ SQLite database queries
+✅ Multi-swarm coordination
+✅ Progress reporting to user
+✅ Issue detection and recommendations
+
+---
+
 ## Learn More
 
 - Swarm Guide: docs/swarm/orchestration.md
 - Topology Patterns: docs/swarm/topologies.md
 - Hooks Integration: docs/hooks/coordination.md
 - **Meta-Orchestration Guide: TESTING_META_ORCHESTRATION.md**
+- **Meta-Orchestration Analysis: docs/META_ORCHESTRATION_ANALYSIS.md**
 - **Supervisor Agents: .claude/agents/supervisor/**
 - **Observability API: docs/API_OBSERVABILITY.md**

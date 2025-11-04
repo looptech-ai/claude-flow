@@ -1,12 +1,14 @@
 # 🌊 Claude-Flow v2.7.0: Enterprise AI Orchestration Platform
 
+**A Loop Enhanced Fork** - Production-grade AI swarm orchestration with specialized monitoring, MCP tool scoping, and intelligent meta-orchestration capabilities.
+
 <div align="center">
 
-[![🌟 Star on GitHub](https://img.shields.io/github/stars/ruvnet/claude-flow?style=for-the-badge&logo=github&color=gold)](https://github.com/ruvnet/claude-flow)
+[![🌟 Star on GitHub](https://img.shields.io/github/stars/looptech-ai/claude-flow?style=for-the-badge&logo=github&color=gold)](https://github.com/looptech-ai/claude-flow)
+[![🏢 Loop](https://img.shields.io/badge/Loop-Technologies-blue?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMNCAxMkwxMiAyMkwyMCAxMkwxMiAyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+)](https://looptech.ai)
 [![📈 Downloads](https://img.shields.io/npm/dt/claude-flow?style=for-the-badge&logo=npm&color=blue&label=Downloads)](https://www.npmjs.com/package/claude-flow)
 [![📦 Latest Release](https://img.shields.io/npm/v/claude-flow/alpha?style=for-the-badge&logo=npm&color=green&label=v2.7.0-alpha.10)](https://www.npmjs.com/package/claude-flow)
-[![⚡ Claude Code](https://img.shields.io/badge/Claude%20Code-SDK%20Integrated-green?style=for-the-badge&logo=anthropic)](https://github.com/ruvnet/claude-flow)
-[![🏛️ Agentics Foundation](https://img.shields.io/badge/Agentics-Foundation-crimson?style=for-the-badge&logo=openai)](https://discord.com/invite/dfxmpwkG2D)
+[![⚡ Claude Code](https://img.shields.io/badge/Claude%20Code-SDK%20Integrated-green?style=for-the-badge&logo=anthropic)](https://github.com/looptech-ai/claude-flow)
 [![🛡️ MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
 
 </div>
@@ -54,8 +56,9 @@ npm install -g @anthropic-ai/claude-code
 claude --dangerously-skip-permissions
 ```
 
-### 🚀 **Install Latest Alpha**
+### 🚀 **Installation Options**
 
+#### Option 1: NPM Package (Official Release)
 ```bash
 # NPX (recommended - always latest)
 npx claude-flow@alpha init --force
@@ -66,6 +69,32 @@ npm install -g claude-flow@alpha
 claude-flow --version
 # v2.7.0-alpha.10
 ```
+
+#### Option 2: GitHub Installation (Loop Fork)
+Install the **enhanced Loop fork** with specialized monitoring, MCP tool scoping, and meta-orchestration features:
+
+```bash
+# Install globally from GitHub
+npm install -g git+https://github.com/looptech-ai/claude-flow.git
+
+# Or install from specific branch
+npm install -g git+https://github.com/looptech-ai/claude-flow.git#main
+
+# Verify installation
+claude-flow --version
+claude-flow --help
+
+# Initialize with Loop enhancements
+claude-flow init --force
+```
+
+**✨ Loop Enhancements Include:**
+- 🎯 **Specialized Monitoring Agent** (hive-monitor-specialized) - Linear/Archon integration
+- 🔒 **MCP Tool Scoping** - Role-based access control for orchestrators/implementers
+- 📊 **Meta-Orchestration** - Production-ready swarm supervision patterns
+- 🧠 **Intelligent File Analysis** - Context-aware monitoring with best practices
+
+**Note:** GitHub installation provides the latest enhancements not yet available in the npm package.
 
 ---
 
@@ -494,10 +523,16 @@ npx claude-flow@alpha memory query "microservices patterns" --reasoningbank
 
 ## 🤝 **Community & Support**
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/ruvnet/claude-flow/issues)
+### Loop Fork Support
+- **GitHub Issues**: [Report bugs or request features](https://github.com/looptech-ai/claude-flow/issues)
+- **Documentation**: [Loop enhancements guide](https://github.com/looptech-ai/claude-flow/tree/main/docs)
+- **Examples**: [Real-world usage patterns](https://github.com/looptech-ai/claude-flow/tree/main/examples)
+- **Website**: [Loop](https://looptech.ai)
+
+### Upstream Project Support
+- **Original Repository**: [ruvnet/claude-flow](https://github.com/ruvnet/claude-flow)
 - **Discord**: [Join the Agentics Foundation community](https://discord.com/invite/dfxmpwkG2D)
-- **Documentation**: [Complete guides and tutorials](https://github.com/ruvnet/claude-flow/wiki)
-- **Examples**: [Real-world usage patterns](https://github.com/ruvnet/claude-flow/tree/main/examples)
+- **Upstream Documentation**: [Complete guides and tutorials](https://github.com/ruvnet/claude-flow/wiki)
 
 ---
 
@@ -527,6 +562,16 @@ npx claude-flow@alpha memory query "microservices patterns" --reasoningbank
 
 ## Star History
 
+### Loop Fork
+<a href="https://www.star-history.com/#looptech-ai/claude-flow&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=looptech-ai/claude-flow&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=looptech-ai/claude-flow&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=looptech-ai/claude-flow&type=Date" />
+ </picture>
+</a>
+
+### Upstream Project
 <a href="https://www.star-history.com/#ruvnet/claude-flow&Date">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ruvnet/claude-flow&type=Date&theme=dark" />
@@ -543,8 +588,14 @@ MIT License - see [LICENSE](./LICENSE) for details
 
 ---
 
-**Built with ❤️ by [rUv](https://github.com/ruvnet) | Powered by Revolutionary AI**
+## 🏢 **About**
 
-*v2.7.0-alpha.10 - Semantic Search Fixed + ReasoningBank Node.js Backend*
+**Loop Enhanced Fork** - Production-grade enhancements for enterprise AI orchestration
+
+**Enhancements by**: [Loop](https://looptech.ai) 🚀
+**Original Author**: [rUv](https://github.com/ruvnet) ❤️
+**Upstream Project**: [ruvnet/claude-flow](https://github.com/ruvnet/claude-flow)
+
+*v2.7.15 - Loop Enhanced with Specialized Monitoring & MCP Tool Scoping*
 
 </div>

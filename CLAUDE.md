@@ -47,7 +47,53 @@
 
 ## Project Overview
 
-This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
+**Loop Enhanced Fork** - Production-grade AI swarm orchestration with specialized monitoring, MCP tool scoping, and intelligent meta-orchestration capabilities.
+
+This is an enhanced fork of claude-flow maintained by **Loop** (https://looptech.ai). This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
+
+### Loop Enhancements
+
+**Company**: Loop (NOT "Loop Technologies")
+**Website**: https://looptech.ai
+**GitHub**: https://github.com/looptech-ai/claude-flow
+**Upstream**: https://github.com/ruvnet/claude-flow
+
+**Key Enhancements**:
+1. **Specialized Monitoring Agent** (hive-monitor-specialized)
+   - Linear issue integration for context-aware monitoring
+   - Archon project management integration
+   - Collective memory communication via SQLite
+   - Intelligent file analysis with purpose understanding
+   - Context7 best practices integration
+   - 2x-3x more effective than basic file-counting monitors
+
+2. **MCP Tool Scoping** (docs/MCP_TOOL_SCOPING.md)
+   - Role-based access control for MCP tools
+   - 7 tool categories: orchestrators, implementers, testers, monitors, architects, devops, github
+   - Security: principle of least privilege, audit logging
+   - Ensures orchestrators get Linear/Archon while implementers get Context7/docs
+
+3. **Meta-Orchestration Patterns** (.claude/skills/swarm-orchestration/SKILL.md Phase 6)
+   - 4 production-ready supervision patterns
+   - File-based monitoring (recommended)
+   - HiveMind SQLite monitoring
+   - Multi-swarm coordination
+   - Intervention supervisor
+
+4. **System Reflection** (docs/DGX_SWARM_REFLECTION.md)
+   - Complete analysis of real-world swarm testing
+   - Monitor effectiveness comparison (basic 4/10 vs specialized 9/10)
+   - Production validation: 4,209 lines of TypeScript in ~10 minutes
+   - Recommendations for continuous improvement
+
+**Installation Options**:
+```bash
+# Option 1: NPM Package (upstream)
+npm install -g claude-flow@alpha
+
+# Option 2: GitHub Installation (Loop enhanced fork)
+npm install -g git+https://github.com/looptech-ai/claude-flow.git
+```
 
 ## SPARC Commands
 
