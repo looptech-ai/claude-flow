@@ -146,6 +146,45 @@ Create a simple test to verify MCP tools are accessible:
 
 ## Troubleshooting
 
+### Plugin Directory Not Found
+
+**Error**: `Plugin directory not found at path: .../plugins/marketplace/meta-orchestration`
+
+**Common Causes**:
+1. **Testing from wrong repository** - You're in a different project directory
+2. **Incorrect source path** - marketplace.json had wrong relative path (fixed in latest version)
+
+**Solutions**:
+
+1. **Verify you're in the correct repository**:
+   ```bash
+   pwd
+   # CORRECT: .../looptech/claude_flow/claude-flow
+   # WRONG:   .../cookcast/... or other project directories
+   ```
+
+2. **Navigate to the claude-flow repo**:
+   ```bash
+   cd /Users/YOUR-USERNAME/dev/looptech/claude_flow/claude-flow
+   # Or wherever you cloned the Loop-enhanced claude-flow
+   ```
+
+3. **Verify plugin structure exists**:
+   ```bash
+   ls -la plugins/
+   # Should show: marketplace/ and meta-orchestration/
+
+   ls -la plugins/meta-orchestration/
+   # Should show: .claude-plugin/, agents/, commands/, skills/
+   ```
+
+4. **Reinstall from correct location**:
+   ```bash
+   /plugin marketplace remove claude-flow-plugin
+   /plugin marketplace add ./plugins/marketplace
+   /plugin install claude-flow@claude-flow-plugin
+   ```
+
 ### Plugin Not Found
 
 **Symptom**: `/plugin install claude-flow@claude-flow-plugin` fails with "not found"
@@ -156,10 +195,10 @@ Create a simple test to verify MCP tools are accessible:
    /plugin marketplace list
    ```
 
-2. Re-add marketplace:
+2. Re-add marketplace with relative path:
    ```bash
    /plugin marketplace remove claude-flow-plugin
-   /plugin marketplace add file://$(pwd)/plugins/marketplace
+   /plugin marketplace add ./plugins/marketplace
    ```
 
 3. Check marketplace.json exists:
@@ -229,28 +268,49 @@ Create a simple test to verify MCP tools are accessible:
    mcp__claude-flow__swarm_status()
    ```
 
-### Skill Not Auto-Activating
+### Skill Not Visible or Auto-Activating
 
-**Symptom**: swarm-orchestration skill doesn't activate when needed
+**Symptom**: When asked "do you have any skills?", the swarm-orchestration skill doesn't appear, or it doesn't activate when working with swarms.
+
+**Understanding Skills**:
+- Skills are NOT explicitly called or listed like tools
+- Skills are auto-invoked based on their description matching the context
+- The skill won't appear in a list of "available skills"
+- Skills provide additional context/instructions when their description matches
 
 **Solutions**:
-1. Check skill file has frontmatter:
+
+1. **Verify plugin is loaded**:
+   ```bash
+   /plugin list
+   # Must show: claude-flow@claude-flow-plugin (enabled)
+   ```
+
+2. **Check skill file has proper frontmatter**:
    ```bash
    head -5 plugins/meta-orchestration/skills/swarm-orchestration/SKILL.md
    # Should show:
    # ---
    # name: swarm-orchestration
-   # description: ...
+   # description: Meta-orchestration patterns for managing claude-flow swarms...
    ```
 
-2. Verify description is specific:
-   - Should mention "swarm", "orchestration", "monitoring"
-   - Should describe when to use it
+3. **Verify description keywords trigger activation**:
+   - Should mention: "swarm", "orchestration", "monitoring", "claude-flow"
+   - Should describe WHEN to use it
 
-3. Force invoke skill by mentioning keywords:
-   - "monitor the swarm"
-   - "orchestrate claude-flow"
-   - "meta-orchestration patterns"
+4. **Test skill activation** by using trigger phrases:
+   - "Start a swarm to build an API"
+   - "Monitor the swarm progress"
+   - "Orchestrate claude-flow agents"
+   - "Use meta-orchestration patterns"
+
+5. **Check if skill is being invoked** (in Claude Code):
+   - When you mention swarms, the responses should reference the WORKFLOW_GUIDE
+   - Should understand 6-phase orchestration workflow
+   - Should know about delegate-monitor-retrieve pattern
+
+**Note**: If the skill doesn't activate, the plugin may not be loaded. See "Plugin Directory Not Found" section above.
 
 ## Uninstallation
 
