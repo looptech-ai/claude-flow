@@ -64,62 +64,73 @@ Bash("claude-flow hive-mind init --topology mesh")
 
 ### Complete MCP Orchestration Pattern ✅ RECOMMENDED
 
-**Full workflow using only MCP tools (primary instance)**:
+**Full workflow combining CLI start + MCP coordination**:
 
 ```javascript
-// Phase 1: Initialize Swarm
+// Phase 1: Start the Swarm (CLI - actually runs the execution)
+Bash("claude-flow swarm 'Build REST API with authentication and React frontend' --background > swarm.log 2>&1 &")
+// OR for hive-mind:
+// Bash("claude-flow hive-mind spawn 'Build REST API' --enable-events --background &")
+
+// Phase 2: Initialize Coordination (MCP - sets up monitoring/orchestration)
 mcp__claude-flow__swarm_init({
   topology: "hierarchical",  // or mesh, star, ring
   maxAgents: 6,
   strategy: "adaptive"
 })
 
-// Phase 2: Spawn Specialized Agents
+// Phase 3: Spawn Additional Agents if Needed (MCP)
 mcp__claude-flow__agents_spawn_parallel({
   agents: [
     { type: "coordinator", name: "Lead", priority: "high" },
-    { type: "coder", name: "Backend-Dev", capabilities: ["api", "database"] },
-    { type: "coder", name: "Frontend-Dev", capabilities: ["react", "ui"] },
-    { type: "tester", name: "QA", capabilities: ["integration-tests"] },
     { type: "reviewer", name: "Code-Review", capabilities: ["security"] }
   ],
-  maxConcurrency: 3
+  maxConcurrency: 2
 })
 
-// Phase 3: Delegate Work (DO NOT work directly!)
+// Phase 4: Orchestrate Sub-Tasks (MCP - delegates to agents)
 const { taskId } = mcp__claude-flow__task_orchestrate({
-  task: "Build REST API with authentication and React frontend",
-  strategy: "parallel",  // or sequential, adaptive
-  priority: "high",
-  dependencies: []
+  task: "Monitor swarm progress and validate architecture",
+  strategy: "parallel",
+  priority: "high"
 })
 
-// Phase 4: Monitor Progress (Check periodically)
+// Phase 5: Monitor Progress (MCP - check periodically)
 // Wait 10-15 seconds, then check status
 const { status, progress } = mcp__claude-flow__task_status({ taskId })
 
 // If status is "in_progress", keep checking every 10-15 seconds
 // DO NOT move forward until status is "completed" or "failed"
 
-// Phase 5: Retrieve Results (After completion)
+// Phase 6: Check Swarm Health (MCP)
+mcp__claude-flow__swarm_status()  // Check overall swarm
+mcp__claude-flow__agent_metrics({ agentId: "..." })  // Agent performance
+mcp__claude-flow__performance_report({ format: "summary" })  // Metrics
+
+// Phase 7: Retrieve Results (MCP - after completion)
 const { results } = mcp__claude-flow__task_results({ taskId })
 
-// Phase 6: Review and Act
+// Phase 8: Review and Act
 // Analyze what agents produced
 // If good: Accept and continue
 // If needs work: Orchestrate follow-up tasks (delegate again!)
 
-// Additional Monitoring Throughout
-mcp__claude-flow__swarm_status()  // Check swarm health
-mcp__claude-flow__agent_metrics({ agentId: "..." })  // Agent performance
-mcp__claude-flow__performance_report({ format: "summary" })  // Overall metrics
+// Optional: Check detailed logs
+Bash("tail -n 50 swarm.log")
 ```
 
+**CRITICAL: Execution vs Coordination**
+
+- **CLI starts EXECUTION**: `claude-flow swarm` or `hive-mind spawn` actually runs agents
+- **MCP provides COORDINATION**: Initialize topology, spawn supervisory agents, orchestrate monitoring
+- **You orchestrate, don't work**: After starting swarm, use MCP to coordinate, never Edit/Write directly
+
 **Key Principles**:
-1. **Never work directly after spawning** - You're an orchestrator, not a worker
-2. **Always wait for task_status = "completed"** - Don't rush ahead
-3. **Always retrieve task_results** - See what agents actually did
-4. **Delegate follow-ups** - Use task_orchestrate again if changes needed
+1. **Start swarm with CLI** - That's what actually executes work
+2. **Coordinate with MCP** - Monitor, orchestrate supervisory tasks
+3. **Never work directly** - You're an orchestrator after starting swarm
+4. **Always wait for completion** - Check task_status periodically
+5. **Delegate follow-ups** - Use task_orchestrate for additional work
 
 ### Hybrid Approach (CLI for Logs)
 
