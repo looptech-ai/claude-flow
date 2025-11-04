@@ -9,12 +9,55 @@ Create or update the CLAUDE.md file with comprehensive meta-orchestration guidan
 
 ## Instructions
 
-1. **Check for existing CLAUDE.md**:
+1. **Install swarm-monitor agent to local .claude/agents/**:
+   ```javascript
+   // First, read the plugin's swarm-monitor agent
+   const agentContent = Read("plugins/marketplace/plugins/meta-orchestration/agents/swarm-monitor")
+
+   // Create .claude/agents directory if it doesn't exist
+   Bash("mkdir -p .claude/agents")
+
+   // Write the agent to local .claude/agents/
+   Write(".claude/agents/swarm-monitor", agentContent)
+
+   // Inform user
+   console.log("✅ Installed swarm-monitor agent to .claude/agents/swarm-monitor")
+   ```
+
+2. **Add swarm logs to .gitignore**:
+   ```javascript
+   // Read existing .gitignore or create empty string
+   let gitignore = ""
+   try {
+     gitignore = Read(".gitignore")
+   } catch {
+     gitignore = ""
+   }
+
+   // Add swarm log patterns if not already present
+   const swarmPatterns = `
+# Claude-flow swarm logs
+swarm.log
+.claude-flow/
+.hive-mind/
+/tmp/swarm-*/
+*.swarm.log
+`
+
+   if (!gitignore.includes("swarm.log")) {
+     Write(".gitignore", gitignore + swarmPatterns)
+     console.log("✅ Added swarm log patterns to .gitignore")
+   } else {
+     console.log("ℹ️  Swarm patterns already in .gitignore")
+   }
+   ```
+
+3. **Check for existing CLAUDE.md**:
    ```javascript
    Read("CLAUDE.md")  // If exists, we'll append/update. If not, create new.
    ```
 
-2. **Create/Update CLAUDE.md** with this content:
+4. **Create/Update CLAUDE.md** with this content:
 
 ```markdown
 # Meta-Orchestration Guidelines
@@ -209,22 +252,40 @@ Before marking task complete, verify:
 **Remember**: You orchestrate, you don't implement. Delegate everything!
 ```
 
-3. **Inform user**:
+5. **Inform user**:
    ```
-   ✅ Meta-orchestration guidelines added to CLAUDE.md
+   ✅ Meta-orchestration initialization complete!
 
-   This file will be automatically read by Claude Code in this directory.
+   What was set up:
+   1. ✅ Installed swarm-monitor agent to .claude/agents/swarm-monitor
+   2. ✅ Added swarm log patterns to .gitignore
+   3. ✅ Created/updated CLAUDE.md with meta-orchestration guidelines
 
-   Key points added:
+   The swarm-monitor agent is now:
+   - Part of your repository (.claude/agents/)
+   - Available to all Claude sessions
+   - Can be customized for this project
+   - Will work even if plugin is uninstalled
+
+   Swarm logs will be ignored:
+   - swarm.log
+   - .claude-flow/
+   - .hive-mind/
+   - /tmp/swarm-*/
+   - *.swarm.log
+
+   CLAUDE.md will guide all Claude sessions to:
    - Always delegate, never work directly
-   - Spawn subagents in current directory (${process.cwd()})
+   - Spawn subagents in current directory
    - Use review subagents to ensure spec alignment
    - Exception: GitTree usage allows external directories
    ```
 
 ## Important Notes
 
-- If CLAUDE.md exists, append this section with a clear header
-- If it doesn't exist, create it with this content
+- The swarm-monitor agent is copied from the plugin to your local `.claude/agents/`
+- If CLAUDE.md exists, append meta-orchestration section with clear header
+- If it doesn't exist, create it with the full content
 - Make sure to replace `${process.cwd()}` with the actual current directory path
-- Emphasize that ALL subagents work in the current directory unless using GitTree
+- Swarm log patterns are added to `.gitignore` (or created if doesn't exist)
+- ALL subagents work in the current directory unless using GitTree
