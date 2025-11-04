@@ -9,6 +9,147 @@ description: Meta-orchestration patterns for managing claude-flow swarms. Use wh
 
 This skill provides patterns for meta-orchestration - using Claude Code to orchestrate and monitor claude-flow swarms. **Updated based on production testing and architectural discoveries.**
 
+## Tool Usage: CLI vs MCP
+
+**IMPORTANT**: You (the primary Claude instance) have TWO ways to interact with claude-flow:
+
+### Option 1: MCP Tools (Direct Integration) ✅ PREFERRED
+
+Use MCP tools directly from your session:
+
+```javascript
+// Initialize swarm
+mcp__claude-flow__swarm_init({
+  topology: "hierarchical",
+  maxAgents: 5
+})
+
+// Check swarm status
+mcp__claude-flow__swarm_status()
+
+// Spawn agents
+mcp__claude-flow__agent_spawn({
+  type: "coder",
+  name: "Backend-Dev"
+})
+
+// Orchestrate tasks
+mcp__claude-flow__task_orchestrate({
+  task: "Build REST API",
+  strategy: "parallel"
+})
+
+// Monitor performance
+mcp__claude-flow__performance_report()
+```
+
+**When to use**: When you need programmatic control and real-time status
+
+### Option 2: CLI Commands (via Bash Tool)
+
+Use CLI when you need to spawn complete swarms in background:
+
+```javascript
+// Start swarm in background
+Bash("claude-flow swarm 'Build API' --background > swarm.log 2>&1 &")
+
+// Check logs
+Bash("tail -f swarm.log")
+
+// Hive-mind initialization
+Bash("claude-flow hive-mind init --topology mesh")
+```
+
+**When to use**: When you want fire-and-forget swarms or need terminal features
+
+### Complete MCP Orchestration Pattern ✅ RECOMMENDED
+
+**Full workflow using only MCP tools (primary instance)**:
+
+```javascript
+// Phase 1: Initialize Swarm
+mcp__claude-flow__swarm_init({
+  topology: "hierarchical",  // or mesh, star, ring
+  maxAgents: 6,
+  strategy: "adaptive"
+})
+
+// Phase 2: Spawn Specialized Agents
+mcp__claude-flow__agents_spawn_parallel({
+  agents: [
+    { type: "coordinator", name: "Lead", priority: "high" },
+    { type: "coder", name: "Backend-Dev", capabilities: ["api", "database"] },
+    { type: "coder", name: "Frontend-Dev", capabilities: ["react", "ui"] },
+    { type: "tester", name: "QA", capabilities: ["integration-tests"] },
+    { type: "reviewer", name: "Code-Review", capabilities: ["security"] }
+  ],
+  maxConcurrency: 3
+})
+
+// Phase 3: Delegate Work (DO NOT work directly!)
+const { taskId } = mcp__claude-flow__task_orchestrate({
+  task: "Build REST API with authentication and React frontend",
+  strategy: "parallel",  // or sequential, adaptive
+  priority: "high",
+  dependencies: []
+})
+
+// Phase 4: Monitor Progress (Check periodically)
+// Wait 10-15 seconds, then check status
+const { status, progress } = mcp__claude-flow__task_status({ taskId })
+
+// If status is "in_progress", keep checking every 10-15 seconds
+// DO NOT move forward until status is "completed" or "failed"
+
+// Phase 5: Retrieve Results (After completion)
+const { results } = mcp__claude-flow__task_results({ taskId })
+
+// Phase 6: Review and Act
+// Analyze what agents produced
+// If good: Accept and continue
+// If needs work: Orchestrate follow-up tasks (delegate again!)
+
+// Additional Monitoring Throughout
+mcp__claude-flow__swarm_status()  // Check swarm health
+mcp__claude-flow__agent_metrics({ agentId: "..." })  // Agent performance
+mcp__claude-flow__performance_report({ format: "summary" })  // Overall metrics
+```
+
+**Key Principles**:
+1. **Never work directly after spawning** - You're an orchestrator, not a worker
+2. **Always wait for task_status = "completed"** - Don't rush ahead
+3. **Always retrieve task_results** - See what agents actually did
+4. **Delegate follow-ups** - Use task_orchestrate again if changes needed
+
+### Hybrid Approach (CLI for Logs)
+
+Combine MCP orchestration with CLI for detailed logging:
+
+```javascript
+// 1. Initialize with MCP (programmatic control)
+mcp__claude-flow__swarm_init({ topology: "mesh", maxAgents: 8 })
+
+// 2. Spawn agents with MCP
+mcp__claude-flow__agents_spawn_parallel({
+  agents: [
+    { type: "coder", name: "Dev1" },
+    { type: "tester", name: "QA1" }
+  ]
+})
+
+// 3. Orchestrate with MCP
+const { taskId } = mcp__claude-flow__task_orchestrate({
+  task: "Build feature X",
+  strategy: "parallel"
+})
+
+// 4. Monitor with MCP
+mcp__claude-flow__task_status({ taskId })
+
+// 5. Optional: Check detailed logs with CLI
+Bash("tail -f .claude-flow/logs/swarm-*.log")
+```
+
 ## Critical Architectural Findings
 
 ### Agent vs Swarm Spawning
