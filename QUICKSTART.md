@@ -55,8 +55,14 @@ claude mcp list
 ## 4. Install Meta-Orchestration Plugin
 
 ```bash
-# From the claude-flow directory
-/plugin marketplace add file://$(pwd)/plugins/marketplace
+# From the claude-flow directory, add marketplace
+# Option A: Use relative path (easiest)
+/plugin marketplace add ./plugins/marketplace
+
+# Option B: Use full path (if Option A doesn't work)
+# First get the full path:
+pwd
+# Then use: /plugin marketplace add file:///full/path/to/claude-flow/plugins/marketplace
 
 # Install the plugin
 /plugin install claude-flow@claude-flow-plugin
