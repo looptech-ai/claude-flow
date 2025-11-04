@@ -54,11 +54,18 @@ claude mcp list
 
 ## 4. Install Meta-Orchestration Plugin
 
-**IMPORTANT**: Make sure you're in the correct repository directory:
+**IMPORTANT**: Navigate to the claude-flow repository directory first:
 ```bash
-# Verify you're in the Loop-enhanced claude-flow repo
+# Navigate to claude-flow directory (wherever you cloned it)
+cd claude-flow
+
+# Verify you're in the right place
 pwd
-# Should show: .../looptech/claude_flow/claude-flow
+# Should end with: .../claude-flow
+
+# Verify plugin structure exists
+ls plugins/marketplace/.claude-plugin/marketplace.json
+# Should show the file exists
 
 # Add marketplace (use relative path from repo root)
 /plugin marketplace add ./plugins/marketplace
@@ -71,10 +78,10 @@ pwd
 # Should show: claude-flow@claude-flow-plugin (enabled)
 ```
 
-**Troubleshooting**: If you see "Plugin directory not found", ensure:
-1. You're in the correct claude-flow repository (not a different project)
-2. The marketplace path is relative: `./plugins/marketplace`
-3. The plugins/ directory exists with meta-orchestration/ inside it
+**Troubleshooting**: If you see "Marketplace file not found", ensure:
+1. You're IN the claude-flow directory (run `cd claude-flow` first)
+2. The file exists at: `plugins/marketplace/.claude-plugin/marketplace.json`
+3. Use the relative path: `./plugins/marketplace` (not `./claude-flow/plugins/marketplace`)
 
 ## 5. Test Installation
 
